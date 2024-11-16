@@ -1,10 +1,9 @@
-'use strict';
-
 import path from 'path';
 import fs from 'fs-extra';
 import { transform } from 'esbuild';
 import chalk from 'chalk';
 
+const LaravelPath = process.cwd();
 
 function getMinifiedFilename(file) {
     if (file.endsWith('.js') && !file.endsWith('.min.js')) {
@@ -21,7 +20,7 @@ async function writeMergedFile(outputPath, fileName, codeArray, fileType, source
     console.log(
         chalk.green(`Merged ${fileType}:`) +
         ` ${chalk.bold(fileName)} ${chalk.yellow('->')} ${chalk.cyan(
-            path.relative(path.resolve(__dirname, 'public/build'), mergedFilePath)
+            path.relative(path.resolve(LaravelPath, 'public/build'), mergedFilePath)
         )}`
     );
     return { src: sourcePath, output: mergedFilePath };
@@ -31,7 +30,7 @@ async function copyNonJsCssFile(sourceFilePath, destFilePath) {
     await fs.copy(sourceFilePath, destFilePath);
     console.log(
         chalk.gray(`Copied file:`) +
-        ` ${chalk.bold(path.basename(sourceFilePath))} ${chalk.yellow('->')} ${chalk.cyan(path.relative(path.resolve(__dirname, 'public/build'), destFilePath))}`
+        ` ${chalk.bold(path.basename(sourceFilePath))} ${chalk.yellow('->')} ${chalk.cyan(path.relative(path.resolve(LaravelPath, 'public/build'), destFilePath))}`
     );
     return { src: sourceFilePath, output: destFilePath, code: null };
 }
@@ -76,9 +75,9 @@ async function minifyFiles(sourcePath, outputPath, mergeResult = false, keepStru
                 const fileStats = await processFile(sourceFilePath, destFilePath, mergeResult);
                 if (mergeResult !== false) {
                     if (fileStats.output.endsWith('.js')) {
-                        writtenFilePaths.mergedJsCode.push(`/** ${path.relative(__dirname, sourceFilePath)} **/\n${fileStats.code}`);
+                        writtenFilePaths.mergedJsCode.push(`/** ${path.relative(LaravelPath, sourceFilePath)} **/\n${fileStats.code}`);
                     } else if (fileStats.output.endsWith('.css')) {
-                        writtenFilePaths.mergedCssCode.push(`/** ${path.relative(__dirname, sourceFilePath)} **/\n${fileStats.code}`);
+                        writtenFilePaths.mergedCssCode.push(`/** ${path.relative(LaravelPath, sourceFilePath)} **/\n${fileStats.code}`);
                     }
                 } else {
                     writtenFilePaths.output.push(fileStats);
@@ -114,7 +113,7 @@ async function processFile(sourceFilePath, destFilePath, mergeResult) {
         code = result.code;
         if (!mergeResult) {
             await fs.outputFile(destFilePath, code);
-            console.log(chalk.green(`Minified JS:`) + ` ${chalk.bold(path.basename(sourceFilePath))} ${chalk.yellow('->')} ${chalk.cyan(path.relative(path.resolve(__dirname, 'public/build'), destFilePath))}`);
+            console.log(chalk.green(`Minified JS:`) + ` ${chalk.bold(path.basename(sourceFilePath))} ${chalk.yellow('->')} ${chalk.cyan(path.relative(path.resolve(LaravelPath, 'public/build'), destFilePath))}`);
         }
         return { src: sourceFilePath, output: destFilePath, code };
     }
@@ -125,7 +124,7 @@ async function processFile(sourceFilePath, destFilePath, mergeResult) {
         code = result.code;
         if (!mergeResult) {
             await fs.outputFile(destFilePath, code);
-            console.log(chalk.blue(`Minified CSS:`) + ` ${chalk.bold(path.basename(sourceFilePath))} ${chalk.yellow('->')} ${chalk.cyan(path.relative(path.resolve(__dirname, 'public/build'), destFilePath))}`);
+            console.log(chalk.blue(`Minified CSS:`) + ` ${chalk.bold(path.basename(sourceFilePath))} ${chalk.yellow('->')} ${chalk.cyan(path.relative(path.resolve(LaravelPath, 'public/build'), destFilePath))}`);
         }
         return { src: sourceFilePath, output: destFilePath, code };
     }
@@ -136,7 +135,7 @@ async function processFile(sourceFilePath, destFilePath, mergeResult) {
 
 
 const EzMinify = (options = {}) => {
-    const { input = [] } = options;
+    const { input = [], manifestPath = 'public/build/manifest.json' } = options;
 
     if (input.length === 0) {
         console.warn(chalk.yellow('No input directories specified. Please provide input paths in plugin options.'));
@@ -146,7 +145,7 @@ const EzMinify = (options = {}) => {
         name: 'ez-vanilla-minify-plugin-for-laravel-vite',
 
         async closeBundle() {
-            const manifestFilePath = path.resolve(__dirname, 'public/build/manifest.json');
+            const manifestFilePath = path.resolve(LaravelPath, manifestPath);
             console.log(chalk.yellow('Looking for manifest.json at:'), chalk.green(manifestFilePath));
 
             try {
@@ -160,8 +159,8 @@ const EzMinify = (options = {}) => {
                         keep_structure = true,
                         merge_result = false
                     } of input) {
-                        const sourcePath = path.resolve(__dirname, src);
-                        const outputPath = path.resolve(__dirname, output);
+                        const sourcePath = path.resolve(LaravelPath, src);
+                        const outputPath = path.resolve(LaravelPath, output);
 
                         try {
                             await fs.access(sourcePath, fs.constants.F_OK);
@@ -174,7 +173,7 @@ const EzMinify = (options = {}) => {
 
                         // Update the manifest with the new files
                         writtenFilePaths.output.forEach(filePath => {
-                            const relativeInput = path.relative(__dirname, filePath.src).replace(/\\/g, '/');
+                            const relativeInput = path.relative(LaravelPath, filePath.src).replace(/\\/g, '/');
                             const relativeOutput = path.relative('public/build', filePath.output).replace(/\\/g, '/');
 
                             manifest[relativeInput] = {
