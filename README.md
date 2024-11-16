@@ -6,3 +6,9 @@ A Laravel Vite plugin to minify and bundle JS and CSS files without modifying co
 
 ```bash
 npm install ez-minify-plugin-for-laravel-vite
+
+
+## TODOs
+
+-[ ] name when keep structure!?
+-[ ] refactors merge -> bundle ? keep_structure?
