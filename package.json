@@ -1,14 +1,18 @@
 {
   "name": "ez-minify-plugin-for-laravel-vite",
   "version": "0.8.0",
-  "main": "src/index.js",
+  "main": "dist/index.js",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "peerDependencies": {
     "chalk": "*",
     "esbuild": "*",
     "fs-extra": "*"
   },
   "scripts": {
-    "build": "esbuild src/index.js --outfile=dist/index.js --format=cjs --bundle --minify --platform=node --external:chalk --external:fs-extra --external:esbuild"
+    "build": "esbuild src/index.js --outfile=dist/index.js --format=esm --bundle --minify --platform=node --external:chalk --external:fs-extra --external:esbuild"
   },
   "devDependencies": {
     "esbuild": "^0.24.0"
