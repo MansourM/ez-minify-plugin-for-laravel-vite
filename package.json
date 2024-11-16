@@ -1,0 +1,29 @@
+{
+  "name": "ez-minify-plugin-for-laravel-vite",
+  "version": "0.8.0",
+  "main": "index.js",
+  "peerDependencies": {
+    "chalk": "*",
+    "esbuild": "*",
+    "fs-extra": "*"
+  },
+  "keywords": [
+    "laravel",
+    "vite",
+    "minify",
+    "plugin",
+    "js",
+    "css",
+    "bundling",
+    "css-minify",
+    "js-minify"
+  ],
+  "author": "Seyed Mansour Mirbehbahani",
+  "license": "MIT",
+  "description": "A Laravel Vite plugin to minify and bundle JS and CSS files without modifying code. Perfect for projects that don’t use modern module systems.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MansourM/ez-minify-plugin-for-laravel-vite.git"
+  }
+}
+
