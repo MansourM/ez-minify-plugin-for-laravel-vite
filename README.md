@@ -18,54 +18,13 @@ Install the plugin via **npm**:
 
 ```bash
 npm install ez-minify-plugin-for-laravel-vite --save-dev
+```
 
 ## ⚙️ Usage
 
 In your `vite.config.js` file, import and use the `EzMinify` plugin like this:
 
 ```javascript
-import EzMinify from 'ez-minify-plugin-for-laravel-vite';
-
-export default {
-  plugins: [
-    EzMinify({
-      input: [
-        {
-          src: 'resources/doot/js/pages/index.init.js',   // Path to JS file or folder
-          output: 'public/build/doot/js/pages',            // Output path for minified JS files
-          keep_structure: true                             // Whether to keep directory structure
-        },
-        {
-          src: 'resources/doot/js',                        // Another JS directory
-          output: 'public/build/doot/js',                  // Output path for minified JS files
-          keep_structure: false,                          // Optionally, flatten the directory structure
-          merge_result: false                              // Don't merge the files into a single file
-        },
-      ],
-    }),
-  ],
-};
-```
-
-### Options
-
-- **`input`** *(Array)*:
-    - Define paths to JS/CSS files or directories to minify.
-    - Each entry is an object with the following options:
-        - `src`: Path to the source directory/file to minify.
-        - `output`: Destination folder for the minified files. (defaults to `'public/build/assets'`)
-        - `keep_structure`: Whether to maintain the folder structure in the output. (default is `true`).
-        - `merge_result`: If `true`, merges files (default is `false`).
-
-- **`manifestPath`** *(String)*: Path to your `manifest.json` file (defaults to `'public/build/manifest.json'`).
-
-### 🧰 Example Configuration
-
-Here’s an example of how to use the **EzMinify** plugin in your `vite.config.js` file:
-
-```js
-import EzMinify from 'ez-minify-plugin-for-laravel-vite';
-
 import EzMinify from 'ez-minify-plugin-for-laravel-vite';
 
 export default {
@@ -92,23 +51,20 @@ export default {
     ],
 };
 ```
-### Breakdown of the Example:
 
-- **`input`**: Specifies the files or directories to be minified and their output locations:
-    - The first entry:
-        - **`src: 'resources/js/pages/index.js'`**: Minifies the `index.js` file located in the `resources/js/pages` directory.
-        - **`output: 'public/build/js/pages'`**: Saves the minified `index.js` in the `public/build/js/pages` directory while keeping the original folder structure.
-        - **`keep_structure: true`**: Keeps the directory structure as it is.
-    - The second entry:
-        - **`src: 'resources/css'`**: Minifies all files in the `resources/css` directory.
-        - **`output: 'public/build/css'`**: Saves the minified files in the `public/build/css` directory.
-        - **`keep_structure: false`**: Flattens the directory structure, meaning all minified files will be saved directly inside `public/build/css`.
-        - **`merge_result: true`**: Merges all the minified CSS files into a single file.
-- **`manifestPath`**: Points to the `public/build/manifest.json` file where the plugin will automatically update the paths of the minified files after processing.
+### Options
+
+- **`input`** *(Array)*:
+    - Define paths to JS/CSS files or directories to minify.
+    - Each entry is an object with the following options:
+        - `src`: Path to the source directory/file to minify.
+        - `output`: Destination folder for the minified files. (defaults to `'public/build/assets'`)
+        - `keep_structure`: Whether to maintain the folder structure in the output. (default is `true`).
+        - `merge_result`: If `true`, merges files (default is `false`).
+
+- **`manifestPath`** *(String)*: Path to your `manifest.json` file (defaults to `'public/build/manifest.json'`).
 
 ## 📝 How It Works
-
-The EzMinify plugin automates the process of minifying and bundling JavaScript and CSS files in your Laravel + Vite project. Here's an overview of how it works:
 
 ### 1. **Input Files**
 You define which files or directories should be processed by the plugin. The plugin supports both individual files and entire directories. It looks for files in the specified `input` paths.
@@ -127,14 +83,6 @@ EzMinify will check if a `manifest.json` exists in your Laravel project (typical
 ### 5. **File Copying**
 For non-JS/CSS files (like images, fonts, etc.), the plugin will copy the files to the output directory without any modifications.
 
-### 6. **Custom Configuration**
-The plugin allows for extensive customization, including:
-- Specifying custom input and output paths.
-- Enabling or disabling file merging.
-- Choosing whether to keep the directory structure or flatten it.
-
-This ensures the plugin fits seamlessly into your existing Laravel + Vite project structure.
-
 ## 💡 Using Minified Assets in Blade
 
 Once you've configured and built your assets using the EzMinify plugin, you can easily reference the minified files in your Laravel Blade templates with the `@vite` directive.
@@ -147,13 +95,10 @@ In your Blade file (e.g., `resources/views/layouts/app.blade.php`), you can incl
 
 ```blade
 <head>
-    <!-- Minified CSS -->
     @vite('resources/css/app.css')
-
-    <!-- Minified JS -->
-    @vite('resources/js/app.js')
+    @vite('resources/js/pages/index.js')
 </head>
-
+```
 
 
 ## 📝 Notes
