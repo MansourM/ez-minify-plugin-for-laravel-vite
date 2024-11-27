@@ -1,6 +1,6 @@
 {
   "name": "ez-minify-plugin-for-laravel-vite",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "main": "dist/index.js",
   "type": "module",
   "exports": {
